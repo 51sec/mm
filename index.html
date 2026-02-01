@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <meta name="monetag" content="cf626e26ed93cce9452dca43ecc39354">
+
+
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "011f37f454f64bb28854e562c6a7a879"}'></script><!-- End Cloudflare Web Analytics -->
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Video Player</title>
+    <title>51Sec Video Player</title>
     <style>
         * {
             margin: 0;
@@ -151,36 +158,6 @@
             transform: translateY(0);
         }
 
-        .info {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .info-item {
-            flex: 1;
-            min-width: 200px;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        }
-
-        .info-item strong {
-            display: block;
-            color: #667eea;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
-
-        .info-item span {
-            color: #333;
-            font-size: 14px;
-            word-break: break-all;
-        }
-
         .footer {
             padding: 10px 20px;
             text-align: center;
@@ -210,10 +187,6 @@
 
             .btn {
                 width: 100%;
-            }
-
-            .info-item {
-                min-width: 100%;
             }
 
             .controls {
@@ -258,10 +231,6 @@
             .input-group {
                 gap: 8px;
             }
-
-            .info {
-                gap: 8px;
-            }
         }
 
         /* Landscape mode on mobile */
@@ -292,10 +261,6 @@
 
             .footer {
                 padding: 5px 15px;
-            }
-
-            .info-item {
-                padding: 10px;
             }
         }
 
@@ -347,45 +312,28 @@
         <div class="controls">
             <div class="input-group">
                 <select id="sourceSelector" class="source-select">
-                    <option value="1">Source 1: cunshao.com/pc</option>
+                    <option value="0">Source 0: cunshao.com/pc</option>
+                    <option value="1">Source 1: yujn.cn</option>
                     <option value="2">Source 2: cunshao.com/web</option>
-                    <option value="3" Selected>Source 3: nrzj.vip</option>
-                    <option value="4">Source 4: yujn.cn</option>
-                    <option value="5">Source 5: nrzj.vip</option>
+                    <option value="3" selected>Source 3: nrzj.vip</option>
                 </select>
-                <button class="btn" id="sourceBtn" onclick="changeSource()">🔄 Switch Source</button>
-            </div>
-
-            <div class="input-group">
+                <button class="btn" id="sourceBtn" onclick="changeSource()">🔄 Switch</button>
                 <input 
                     type="text" 
                     id="videoUrl" 
                     placeholder="Or enter custom video URL"
                     value=""
                 >
-                <button class="btn" onclick="loadCustomVideo()">▶ Load Custom</button>
-            </div>
-
-            <div class="input-group">
-                <button class="btn" id="next">⏭ Next Video</button>
+                <button class="btn" onclick="loadCustomVideo()">▶ Load</button>
+                <button class="btn" id="next">⏭ Next</button>
                 <button class="btn" id="switch">Auto: On</button>
-            </div>
-
-            <div class="info">
-                <div class="info-item">
-                    <strong>Current Source</strong>
-                    <span id="currentSource">http://v.nrzj.vip/video.php</span>
-                </div>
-                <div class="info-item">
-                    <strong>Status</strong>
-                    <span id="status">Ready to play</span>
-                </div>
             </div>
         </div>
 
         <div class="footer">
-            <p>💡 Tip: This player supports most video formats and streaming URLs. Works on desktop and mobile devices.</p>
-            <p style="margin-top: 5px;">© 2026 51Sec Video Player | NetSec Design</p>
+
+            
+            <p>© 2026 51Sec Video Player | Netsec Design</p>
         </div>
     </div>
 
@@ -401,19 +349,16 @@
             // Video sources array
             var videoSources = [
                 'https://www.cunshao.com/666666/api/pc.php',
-                'https://www.cunshao.com/666666/api/web.php',
-                'http://v.nrzj.vip/video.php',
                 'http://api.yujn.cn/api/zzxjj.php',
+                'https://www.cunshao.com/666666/api/web.php',
                 'http://v.nrzj.vip/video.php'
             ];
 
             var auto = true;
-            var currentSourceIndex = 3; // Default to source 3
+            var currentSourceIndex = 3; // Default to source 3 (nrzj.vip)
             var player = get('player');
             var videoUrlInput = get('videoUrl');
             var sourceSelector = get('sourceSelector');
-            var currentSourceSpan = get('currentSource');
-            var statusSpan = get('status');
             var loadingDiv = get('loading');
 
             // Adjust video size based on aspect ratio
@@ -461,8 +406,6 @@
                 player.src = source;
                 player.load();
                 player.play();
-                currentSourceSpan.textContent = source;
-                statusSpan.textContent = 'Loading next video...';
             };
 
             // Change video source
@@ -484,7 +427,6 @@
                 }
 
                 loadingDiv.classList.add('active');
-                statusSpan.textContent = 'Loading...';
 
                 // Check if URL is already a complete video URL or needs to be passed to the current source
                 if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -504,11 +446,9 @@
                 }
                 
                 player.load();
-                currentSourceSpan.textContent = player.src;
 
                 player.play().catch(function(error) {
                     console.log('Auto-play prevented:', error);
-                    statusSpan.textContent = 'Ready to play (click play)';
                 });
             };
 
@@ -543,7 +483,6 @@
             // Video event listeners
             bind(player, 'loadstart', function() {
                 loadingDiv.classList.add('active');
-                statusSpan.textContent = 'Loading...';
             });
 
             bind(player, 'loadedmetadata', function() {
@@ -552,16 +491,14 @@
 
             bind(player, 'loadeddata', function() {
                 loadingDiv.classList.remove('active');
-                statusSpan.textContent = 'Ready to play';
             });
 
             bind(player, 'playing', function() {
                 loadingDiv.classList.remove('active');
-                statusSpan.textContent = 'Playing';
             });
 
             bind(player, 'pause', function() {
-                statusSpan.textContent = 'Paused';
+                // Video paused
             });
 
             // Handle Enter key in input
@@ -593,5 +530,101 @@
 
         })(window, document);
     </script>
+
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "011f37f454f64bb28854e562c6a7a879"}'></script><!-- End Cloudflare Web Analytics -->
+<script async src="https://fundingchoicesmessages.google.com/i/pub-5660349373091698?ers=1" nonce="71EKVshklXofUN3O1mph_A"></script><script nonce="71EKVshklXofUN3O1mph_A">(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
+<script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"> </script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5660349373091698"
+     crossorigin="anonymous"></script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3NWLMBWBZS"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-3NWLMBWBZS');
+</script>
+
+<amp-auto-ads type="adsense"
+        data-ad-client="ca-pub-5660349373091698">
+</amp-auto-ads>
+<amp-ad width="100vw" height="320"
+     type="adsense"
+     data-ad-client="ca-pub-5660349373091698"
+     data-ad-slot="7912531145"
+     data-auto-format="rspv"
+     data-full-width="">
+  <div overflow=""></div>
+</amp-ad>
+
+<style> .social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* space between icons */
+  margin: 20px 0;
+}
+.social-icons img {
+  height: 50px;
+  width: 50px;
+  border-radius: 8px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.social-icons img:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
+}
+</style>
+<div class="social-icons" style="clear: both; text-align: center;">
+<br /><br />
+
+  <a
+    href="https://www.youtube.com/c/NetSec"
+    style="margin-left: 1em; margin-right: 1em;"     target="_blank"
+  >
+    <img alt="51sec YouTube" 
+      border="0"
+      data-original-height="500"
+      data-original-width="500"
+      height="50"
+      src="https://i.51sec.org/2025/Logo-illustrator-YouTube-PNG.png"
+      width="50"
+    />
+  </a>
+  <a
+    href="https://sites.51sec.org"
+    style="margin-left: 1em; margin-right: 1em;"     target="_blank"
+  >
+    <img alt="51sec Sites" 
+      border="0"
+      data-original-height="500"
+      data-original-width="500"
+      height="50"
+      src="https://photos.51sec.org/file/test1-51sec/2021/10/sites%20-%20round%20-500.png"
+      width="50"
+    />
+  </a>
+  <a href="https://nav.51sec.org" style="margin-left: 1em; margin-right: 1em;" target="_blank">
+    <img alt="51sec Navigation" 
+      border="0"
+      data-original-width="500"
+      height="50"
+      src="https://photos.51sec.org/file/test1-51sec/2021/10/Black%2C%20White%20and%20Yellow%20Lightning%20-%20Round%20corner-350.png"
+      width="50"
+    />
+  </a>
+  <a
+    href="https://od.51sec.org"     style="margin-left: 1em; margin-right: 1em;"     target="_blank"  >
+    <img alt="51sec OneDrive" 
+      border="0"
+      data-original-height="500"
+      height="50"
+      src="https://photos.51sec.org/file/test1-51sec/2021/10/OneDrive%20OD%2051sec-roundcorner%20-%20Copy.png"
+      width="50"
+    />
+  </a>
+ 
+</div>
+
 </body>
 </html>
