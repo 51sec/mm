@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Video Player</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+        }
+
+        #main {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #player {
+            width: 100%;
+            height: 100%;
+            max-height: 75vh;
+            background: #000;
+            outline: none;
+            object-fit: contain;
+        }
+
+        .controls {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            flex-shrink: 0;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .source-select {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .source-select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .source-select option {
+            padding: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .info {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-item strong {
+            display: block;
+            color: #667eea;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .info-item span {
+            color: #333;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .footer {
+            padding: 10px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 11px;
+            background: #f0f0f0;
+            flex-shrink: 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .header p {
+                font-size: 12px;
+            }
+
+            .header {
+                padding: 12px 15px;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .info-item {
+                min-width: 100%;
+            }
+
+            .controls {
+                padding: 12px 15px;
+            }
+
+            .video-container {
+                min-height: 70vh;
+            }
+
+            #player {
+                max-height: 80vh;
+            }
+
+            .footer {
+                padding: 8px 15px;
+                font-size: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .controls {
+                padding: 10px;
+            }
+
+            .video-container {
+                min-height: 75vh;
+            }
+
+            #player {
+                max-height: 85vh;
+            }
+
+            .input-group {
+                gap: 8px;
+            }
+
+            .info {
+                gap: 8px;
+            }
+        }
+
+        /* Landscape mode on mobile */
+        @media (max-width: 896px) and (orientation: landscape) {
+            .header {
+                padding: 8px 15px;
+            }
+
+            .header h1 {
+                font-size: 16px;
+            }
+
+            .header p {
+                display: none;
+            }
+
+            .controls {
+                padding: 10px 15px;
+            }
+
+            .video-container {
+                min-height: 80vh;
+            }
+
+            #player {
+                max-height: 90vh;
+            }
+
+            .footer {
+                padding: 5px 15px;
+            }
+
+            .info-item {
+                padding: 10px;
+            }
+        }
+
+        /* Loading indicator */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Video Player</h1>
+            <p>Enter a video URL to start playing</p>
+        </div>
+
+        <div class="video-container">
+            <section id="main">
+                <video id="player" src="http://v.nrzj.vip/video.php" controls controlsList="nodownload" webkit-playsinline playsinline></video>
+            </section>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Loading video...</p>
+        </div>
+
+        <div class="controls">
+            <div class="input-group">
+                <select id="sourceSelector" class="source-select">
+                    <option value="0">Source 0: cunshao.com/pc</option>
+                    <option value="1">Source 1: iqfk.top</option>
+                    <option value="2">Source 2: yujn.cn</option>
+                    <option value="3">Source 3: cunshao.com/web</option>
+                    <option value="4">Source 4: qoc.cc</option>
+                    <option value="5" selected>Source 5: nrzj.vip</option>
+                </select>
+                <button class="btn" id="sourceBtn" onclick="changeSource()">🔄 Switch Source</button>
+            </div>
+
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="videoUrl" 
+                    placeholder="Or enter custom video URL"
+                    value=""
+                >
+                <button class="btn" onclick="loadCustomVideo()">▶ Load Custom</button>
+            </div>
+
+            <div class="input-group">
+                <button class="btn" id="next">⏭ Next Video</button>
+                <button class="btn" id="switch">Auto: On</button>
+            </div>
+
+            <div class="info">
+                <div class="info-item">
+                    <strong>Current Source</strong>
+                    <span id="currentSource">http://v.nrzj.vip/video.php</span>
+                </div>
+                <div class="info-item">
+                    <strong>Status</strong>
+                    <span id="status">Ready to play</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>💡 Tip: This player supports most video formats and streaming URLs. Works on desktop and mobile devices.</p>
+            <p style="margin-top: 5px;">© 2026 Video Player | Responsive Design</p>
+        </div>
+    </div>
+
+    <script>
+        (function (window, document) {
+            var get = function (id) {
+                return document.getElementById(id);
+            }
+            var bind = function (element, event, callback) {
+                return element.addEventListener(event, callback);
+            }
+            
+            // Video sources array
+            var videoSources = [
+                'https://www.cunshao.com/666666/api/pc.php',
+                'https://jx.iqfk.top/api/sjsp.php',
+                'http://api.yujn.cn/api/zzxjj.php',
+                'https://www.cunshao.com/666666/api/web.php',
+                'https://api.qoc.cc/api/xjj',
+                'http://v.nrzj.vip/video.php'
+            ];
+
+            var auto = true;
+            var currentSourceIndex = 5; // Default to source 5
+            var player = get('player');
+            var videoUrlInput = get('videoUrl');
+            var sourceSelector = get('sourceSelector');
+            var currentSourceSpan = get('currentSource');
+            var statusSpan = get('status');
+            var loadingDiv = get('loading');
+
+            // Adjust video size based on aspect ratio
+            var adjustVideoSize = function () {
+                var container = document.querySelector('.video-container');
+                var main = document.querySelector('#main');
+                
+                // Get viewport dimensions
+                var viewportWidth = window.innerWidth;
+                var viewportHeight = window.innerHeight;
+                
+                if (player.videoWidth && player.videoHeight) {
+                    var videoRatio = player.videoWidth / player.videoHeight;
+                    
+                    if (videoRatio > 1) {
+                        // Horizontal video
+                        player.style.width = '100%';
+                        player.style.height = 'auto';
+                        player.style.maxHeight = '75vh';
+                        container.style.minHeight = '60vh';
+                    } else {
+                        // Vertical video
+                        player.style.width = 'auto';
+                        player.style.height = '85vh';
+                        player.style.maxWidth = '100%';
+                        container.style.minHeight = '85vh';
+                    }
+                }
+                
+                // Additional adjustments for mobile landscape
+                if (viewportWidth > viewportHeight && viewportWidth <= 896) {
+                    player.style.maxHeight = '90vh';
+                    container.style.minHeight = '80vh';
+                }
+            };
+
+            // Get current video source
+            var getCurrentSource = function() {
+                return videoSources[currentSourceIndex];
+            };
+
+            // Load next random video from current source
+            var randomm = function () {
+                var source = getCurrentSource();
+                player.src = source;
+                player.load();
+                player.play();
+                currentSourceSpan.textContent = source;
+                statusSpan.textContent = 'Loading next video...';
+            };
+
+            // Change video source
+            var changeSource = function () {
+                currentSourceIndex = parseInt(sourceSelector.value);
+                randomm();
+            };
+
+            // Make changeSource globally accessible
+            window.changeSource = changeSource;
+
+            // Load custom video URL
+            var loadCustomVideo = function () {
+                const url = videoUrlInput.value.trim();
+                
+                if (!url) {
+                    alert('Please enter a video URL');
+                    return;
+                }
+
+                loadingDiv.classList.add('active');
+                statusSpan.textContent = 'Loading...';
+
+                // Check if URL is already a complete video URL or needs to be passed to the current source
+                if (url.startsWith('http://') || url.startsWith('https://')) {
+                    // If it's a complete URL, check if it looks like a direct video file
+                    if (url.match(/\.(mp4|webm|ogg|m3u8)$/i)) {
+                        // Direct video file
+                        player.src = url;
+                    } else {
+                        // Assume it needs to be passed to the video source API
+                        const currentSource = getCurrentSource();
+                        player.src = currentSource + '?url=' + encodeURIComponent(url);
+                    }
+                } else {
+                    // Not a complete URL, pass it to the current source
+                    const currentSource = getCurrentSource();
+                    player.src = currentSource + '?url=' + encodeURIComponent(url);
+                }
+                
+                player.load();
+                currentSourceSpan.textContent = player.src;
+
+                player.play().catch(function(error) {
+                    console.log('Auto-play prevented:', error);
+                    statusSpan.textContent = 'Ready to play (click play)';
+                });
+            };
+
+            // Make loadCustomVideo globally accessible
+            window.loadCustomVideo = loadCustomVideo;
+
+            // Bind next button
+            bind(get('next'), 'click', randomm);
+
+            // Auto-play on error
+            bind(player, 'error', function () {
+                console.log('Video error, loading next...');
+                randomm();
+            });
+
+            // Toggle auto-play
+            bind(get('switch'), 'click', function () {
+                auto = !auto;
+                this.innerText = 'Auto: ' + (auto ? 'On' : 'Off');
+            });
+
+            // Auto-play next video when current ends
+            bind(player, 'ended', function () {
+                if (auto) randomm();
+            });
+
+            // Update source index when selector changes
+            bind(sourceSelector, 'change', function() {
+                currentSourceIndex = parseInt(this.value);
+            });
+
+            // Video event listeners
+            bind(player, 'loadstart', function() {
+                loadingDiv.classList.add('active');
+                statusSpan.textContent = 'Loading...';
+            });
+
+            bind(player, 'loadedmetadata', function() {
+                adjustVideoSize();
+            });
+
+            bind(player, 'loadeddata', function() {
+                loadingDiv.classList.remove('active');
+                statusSpan.textContent = 'Ready to play';
+            });
+
+            bind(player, 'playing', function() {
+                loadingDiv.classList.remove('active');
+                statusSpan.textContent = 'Playing';
+            });
+
+            bind(player, 'pause', function() {
+                statusSpan.textContent = 'Paused';
+            });
+
+            // Handle Enter key in input
+            bind(videoUrlInput, 'keypress', function(e) {
+                if (e.key === 'Enter') {
+                    loadCustomVideo();
+                }
+            });
+
+            // Adjust video size on window resize
+            bind(window, 'resize', function() {
+                adjustVideoSize();
+            });
+
+            // Adjust video size on orientation change
+            bind(window, 'orientationchange', function() {
+                setTimeout(adjustVideoSize, 100);
+            });
+
+            // Prevent zoom on double-tap for mobile
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+
+        })(window, document);
+    </script>
+</body>
+</html>
