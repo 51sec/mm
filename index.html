@@ -366,6 +366,42 @@
             min-width: 120px;
         }
 
+        .pause-modal-social {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .pause-modal-social p {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+
+        .pause-modal-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .pause-modal-social-icons a {
+            display: inline-block;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pause-modal-social-icons a:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pause-modal-social-icons img {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+        }
+
         @media (max-width: 480px) {
             .pause-modal-content {
                 padding: 20px;
@@ -386,6 +422,15 @@
 
             .pause-modal-buttons .btn {
                 width: 100%;
+            }
+
+            .pause-modal-social-icons {
+                gap: 10px;
+            }
+
+            .pause-modal-social-icons img {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -441,6 +486,25 @@
                 <div class="pause-modal-buttons">
                     <button class="btn" onclick="continuePlaying()">✅ Continue</button>
                     <button class="btn" onclick="stopPlaying()">❌ Stop</button>
+                </div>
+                
+                <!-- Social Media Icons -->
+                <div class="pause-modal-social">
+                    <p>Follow us on social media:</p>
+                    <div class="pause-modal-social-icons">
+                        <a href="https://www.youtube.com/c/NetSec" target="_blank" title="51sec YouTube">
+                            <img src="https://i.51sec.org/2025/Logo-illustrator-YouTube-PNG.png" alt="YouTube">
+                        </a>
+                        <a href="https://sites.51sec.org" target="_blank" title="51sec Sites">
+                            <img src="https://photos.51sec.org/file/test1-51sec/2021/10/sites%20-%20round%20-500.png" alt="Sites">
+                        </a>
+                        <a href="https://nav.51sec.org" target="_blank" title="51sec Navigation">
+                            <img src="https://photos.51sec.org/file/test1-51sec/2021/10/Black%2C%20White%20and%20Yellow%20Lightning%20-%20Round%20corner-350.png" alt="Navigation">
+                        </a>
+                        <a href="https://od.51sec.org" target="_blank" title="51sec OneDrive">
+                            <img src="https://photos.51sec.org/file/test1-51sec/2021/10/OneDrive%20OD%2051sec-roundcorner%20-%20Copy.png" alt="OneDrive">
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
