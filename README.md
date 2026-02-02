@@ -1,21 +1,15 @@
 Just a video play site
 
 
-New Features:
+Current Features:
 
-📋 Source Selector Dropdown - Switch between 6 different video sources:
-
-Source 0: cunshao.com/pc
-Source 1: iqfk.top
-Source 2: yujn.cn
-Source 3: cunshao.com/web
-Source 4: qoc.cc
-Source 5: nrzj.vip (default)
-
-
-🔄 Switch Source Button - Click to load a video from the selected source
-
-▶ Load Custom Button - Separate button for loading custom video URLs
+Multiple video source options (7 different sources)
+Auto-play toggle
+Custom URL input
+Pause modal after every 10 videos
+Responsive design for mobile/tablet
+Ad blocker detection
+Various ad network integrations
 
 
 Smart URL Handling:
