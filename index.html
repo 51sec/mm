@@ -287,6 +287,107 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Pause Modal */
+        .pause-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pause-modal.active {
+            display: flex;
+        }
+
+        .pause-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .pause-modal-content h2 {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .pause-modal-content p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .pause-modal-image {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .pause-timer {
+            color: #764ba2;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .pause-modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .pause-modal-buttons .btn {
+            min-width: 120px;
+        }
+
+        @media (max-width: 480px) {
+            .pause-modal-content {
+                padding: 20px;
+                width: 95%;
+            }
+
+            .pause-modal-content h2 {
+                font-size: 20px;
+            }
+
+            .pause-modal-content p {
+                font-size: 14px;
+            }
+
+            .pause-modal-buttons {
+                flex-direction: column;
+            }
+
+            .pause-modal-buttons .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -330,9 +431,21 @@
             </div>
         </div>
 
-        <div class="footer">
+        <!-- Pause Modal -->
+        <div class="pause-modal" id="pauseModal">
+            <div class="pause-modal-content">
+                <h2>🎬 Take a Break!</h2>
+                <p>You've watched 10 videos. Would you like to continue?</p>
+                <img id="pauseImage" class="pause-modal-image" src="https://www.cunshao.com/666666/api/pic.php" alt="Break Image">
+                <div class="pause-timer" id="pauseTimer">Refreshing in 10 seconds...</div>
+                <div class="pause-modal-buttons">
+                    <button class="btn" onclick="continuePlaying()">✅ Continue</button>
+                    <button class="btn" onclick="stopPlaying()">❌ Stop</button>
+                </div>
+            </div>
+        </div>
 
-            
+        <div class="footer">
             <p>© 2026 51Sec Video Player | Netsec Design</p>
         </div>
     </div>
@@ -359,10 +472,16 @@
 
             var auto = true;
             var currentSourceIndex = 3; // Default to source 3 (nrzj.vip)
+            var videoCount = 0; // Counter for videos played
+            var pauseTimer = null; // Timer for image refresh
+            var pauseCountdown = 10; // Countdown in seconds
             var player = get('player');
             var videoUrlInput = get('videoUrl');
             var sourceSelector = get('sourceSelector');
             var loadingDiv = get('loading');
+            var pauseModal = get('pauseModal');
+            var pauseImage = get('pauseImage');
+            var pauseTimerSpan = get('pauseTimer');
 
             // Adjust video size based on aspect ratio
             var adjustVideoSize = function () {
@@ -402,6 +521,56 @@
             var getCurrentSource = function() {
                 return videoSources[currentSourceIndex];
             };
+
+            // Show pause modal
+            var showPauseModal = function() {
+                pauseModal.classList.add('active');
+                player.pause();
+                pauseCountdown = 10;
+                pauseTimerSpan.textContent = 'Refreshing in ' + pauseCountdown + ' seconds...';
+                
+                // Refresh image with cache busting
+                pauseImage.src = 'https://www.cunshao.com/666666/api/pic.php?' + new Date().getTime();
+                
+                // Start countdown timer
+                pauseTimer = setInterval(function() {
+                    pauseCountdown--;
+                    pauseTimerSpan.textContent = 'Refreshing in ' + pauseCountdown + ' seconds...';
+                    
+                    if (pauseCountdown <= 0) {
+                        // Refresh image
+                        pauseImage.src = 'https://www.cunshao.com/666666/api/pic.php?' + new Date().getTime();
+                        pauseCountdown = 10;
+                    }
+                }, 1000);
+            };
+
+            // Hide pause modal
+            var hidePauseModal = function() {
+                pauseModal.classList.remove('active');
+                if (pauseTimer) {
+                    clearInterval(pauseTimer);
+                    pauseTimer = null;
+                }
+            };
+
+            // Continue playing
+            var continuePlaying = function() {
+                hidePauseModal();
+                videoCount = 0; // Reset counter
+                randomm(); // Play next video
+            };
+
+            // Stop playing
+            var stopPlaying = function() {
+                hidePauseModal();
+                videoCount = 0; // Reset counter
+                player.pause();
+            };
+
+            // Make functions globally accessible
+            window.continuePlaying = continuePlaying;
+            window.stopPlaying = stopPlaying;
 
             // Load next random video from current source
             var randomm = function () {
@@ -475,7 +644,12 @@
 
             // Auto-play next video when current ends
             bind(player, 'ended', function () {
-                if (auto) randomm();
+                if (videoCount >= 10) {
+                    // Show pause modal after 10 videos
+                    showPauseModal();
+                } else if (auto) {
+                    randomm();
+                }
             });
 
             // Update source index when selector changes
@@ -498,6 +672,8 @@
 
             bind(player, 'playing', function() {
                 loadingDiv.classList.remove('active');
+                videoCount++; // Increment counter when video starts playing
+                console.log('Videos played: ' + videoCount);
             });
 
             bind(player, 'pause', function() {
@@ -533,6 +709,8 @@
 
         })(window, document);
     </script>
+
+
 
 
 
@@ -708,6 +886,8 @@
   setInterval(checkAndShowOverlay, 60000);
 })();
 </script>	
+
+
 
 </body>
 </html>
