@@ -1,37 +1,87 @@
-Just a video play site
+# 51Sec MM
 
+51Sec MM is a lightweight, single-page video player that can be deployed as a
+static website. The interface, styles, and player logic are kept in one HTML
+file; no server-side runtime, package installation, or build step is required.
 
-Current Features:
+## Project goals
 
-Multiple video source options (7 different sources)
-Auto-play toggle
-Custom URL input
-Pause modal after every 10 videos
-Responsive design for mobile/tablet
-Ad blocker detection
-Various ad network integrations
+This repository's owner-requested scope is:
 
+1. Include a license, copyright notice, and explicit 51Sec ownership statement.
+2. Document the project, its features, and how to use and deploy it.
+3. Support desktop and mobile devices with responsive controls and video
+   playback.
+4. Keep the deployable application in a single HTML file, without a framework,
+   build system, or server-side application code.
+5. Include the pause-with-image viewing break and display-ad features inspired
+   by `51sec/xjj`, while keeping this project independently implemented.
+6. Keep the interface compatible with current Chrome, Microsoft Edge, and
+   Firefox releases.
+7. Present a modern, clean layout with clear controls that are easy to use.
 
-Smart URL Handling:
+## Features
 
-If you enter a complete video URL (http/https), it detects if it's a direct video file (.mp4, .webm, .ogg, .m3u8) and plays it directly
-If it's not a direct video file, it passes the URL to the currently selected source API
-If you enter a partial URL, it automatically passes it to the current source
+- Responsive video playback for desktop, tablet, and mobile screens, including
+  portrait and landscape layouts, using video aspect ratio and viewport-aware
+  sizing.
+- Seven selectable video-source endpoints, with a custom URL option.
+- Direct playback for common video files (`.mp4`, `.webm`, `.ogg`, and `.m3u8`)
+  when supported by the browser. Other URLs are passed to the selected source.
+- Optional automatic playback of the next video and a manual Next control.
+- A break after every 10 videos, with a rotating image and Continue/Stop actions.
+- Responsive Google AdSense display advertising and ad-block detection.
+- A dismissible, non-blocking ad-block notice instead of a full-screen lockout.
+- Keyboard-operable controls and support for browser zoom on mobile devices.
+- A clear visual hierarchy, readable contrast, visible focus states, and
+  touch-friendly controls.
+- Social links and a copyright/ownership notice for 51Sec.
 
+## Browser support
 
+The page uses standard HTML, CSS, and browser JavaScript APIs supported by
+current Chrome, Edge, and Firefox. Responsive layout includes viewport-unit
+fallbacks for browsers that do not support the newer small-viewport unit.
+Playback of a particular media format or third-party source still depends on
+browser codec support, source availability, and the source's HTTPS/CORS policy.
 
-How to Use:
+## Run or deploy
 
-Switch Sources: Select a source from the dropdown and click "Switch Source" to load a video from that source
-Next Video: Click "Next Video" to get another random video from the current source
-Custom URL: Enter any video URL in the input field and click "Load Custom" to play it
-Auto-play: Toggle "Auto: On/Off" to control automatic playback when videos end
-All buttons work with the currently selected source
+Open `index.html` in a modern browser, or publish this repository with any
+static-site host (for example, GitHub Pages). Use an HTTPS host for the best
+compatibility with mobile browsers and third-party media endpoints. There is no
+build step.
 
+## Use the player
 
-随机美女视频api横屏：https://www.cunshao.com/666666/api/pc.php
+1. Select a video source and choose **Switch** to load from it.
+2. Choose **Next** to request another video from the selected source.
+3. Paste a URL and choose **Load** to play a direct video or pass it to the
+   selected source.
+4. Toggle **Auto: On/Off** to control automatic playback when a video ends.
+5. After 10 videos have started, the player pauses at the end of the current
+   video and displays a break image. Choose **Continue** to reset the counter
+   and load the next video, or **Stop** to close the break.
 
-竖屏：https://www.cunshao.com/666666/api/web.php
+The video and break-image endpoints are third-party services and may change,
+become unavailable, or apply their own terms. Some listed endpoints use HTTP;
+modern HTTPS pages may block those requests as mixed content.
 
-随机美女图片api：https://www.cunshao.com/666666/api/pic.php
+## Advertising and analytics
 
+The page includes a responsive AdSense display unit and the existing
+advertising, consent, and analytics integrations. Ad delivery depends on the
+provider, account approval, user region/consent, and any browser content
+blocker. The current AdSense publisher and slot IDs are in `index.html`; update
+them if the account or unit changes. Review each provider's policies and
+privacy requirements before deployment.
+
+## Ownership and license
+
+51Sec owns and maintains this project and its original code and branding.
+Third-party video sources, media, advertising, analytics, and linked services
+remain subject to their respective owners' terms and are not relicensed by this
+repository.
+
+Copyright (c) 2026 51Sec. The project source is distributed under the MIT
+License; see [LICENSE](LICENSE).

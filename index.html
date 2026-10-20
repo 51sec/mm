@@ -5,9 +5,11 @@
     <script src="https://quge5.com/88/tag.min.js" data-zone="207400" async data-cfasync="false"></script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>51Sec MM Video Player</title>
+    <meta name="description" content="A lightweight, responsive video player by 51Sec.">
+    <meta name="author" content="51Sec">
     <style>
         * {
             margin: 0;
@@ -16,60 +18,73 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f3f5fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
-            padding: 0;
+            padding: 0 0 24px;
             margin: 0;
+            color: #1b2030;
         }
 
         .container {
             width: 100%;
-            max-width: 100%;
-            background: rgba(255, 255, 255, 0.95);
+            max-width: 1280px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            min-height: 100dvh;
         }
 
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(115deg, #171b2b 0%, #292044 100%);
             color: white;
-            padding: 15px 20px;
+            padding: 20px 24px;
             text-align: center;
             flex-shrink: 0;
+            box-shadow: 0 4px 18px rgba(21, 24, 39, 0.14);
         }
 
         .header h1 {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 3px;
+            font-size: clamp(20px, 2.4vw, 26px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 5px;
         }
 
         .header p {
             font-size: 13px;
-            opacity: 0.9;
+            color: #c7c8d5;
         }
 
         .video-container {
             position: relative;
-            width: 100%;
-            background: #000;
-            flex: 1;
+            width: calc(100% - 40px);
+            max-width: 1100px;
+            margin: 24px auto 18px;
+            background: #10121a;
+            flex: 0 0 auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 60vh;
+            min-height: 55vh;
+            min-height: clamp(320px, 58svh, 760px);
+            padding: 10px;
+            border: 1px solid rgba(28, 31, 46, 0.1);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 16px 36px rgba(28, 34, 54, 0.15);
         }
 
         #main {
             position: relative;
             width: 100%;
-            height: 100%;
+            height: auto;
+            min-height: inherit;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -77,32 +92,43 @@
 
         #player {
             width: 100%;
-            height: 100%;
-            max-height: 75vh;
-            background: #000;
+            height: auto;
+            max-width: 100%;
+            max-height: min(78vh, 900px);
+            max-height: min(78svh, 900px);
+            background: #10121a;
             outline: none;
             object-fit: contain;
+            border-radius: 10px;
         }
 
         .controls {
-            padding: 15px 20px;
-            background: #f8f9fa;
+            width: calc(100% - 40px);
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 18px;
+            background: #fff;
             flex-shrink: 0;
+            border: 1px solid #e6e9f0;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(28, 34, 54, 0.07);
         }
 
         .input-group {
-            display: flex;
+            display: grid;
+            grid-template-columns: minmax(140px, 1.2fr) auto minmax(180px, 1.5fr) auto auto auto;
+            align-items: stretch;
             gap: 10px;
-            margin-bottom: 15px;
         }
 
         .input-group input {
-            flex: 1;
+            min-width: 0;
+            width: 100%;
             padding: 12px 15px;
-            border: 2px solid #e0e0e0;
+            border: 1px solid #dce1ea;
             border-radius: 10px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .input-group input:focus {
@@ -112,14 +138,15 @@
         }
 
         .source-select {
-            flex: 1;
+            min-width: 0;
+            width: 100%;
             padding: 12px 15px;
-            border: 2px solid #e0e0e0;
+            border: 1px solid #dce1ea;
             border-radius: 10px;
             font-size: 14px;
             background: white;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .source-select:focus {
@@ -133,73 +160,104 @@
         }
 
         .btn {
-            padding: 12px 25px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 11px 18px;
+            min-height: 44px;
+            background: #5b50d6;
             color: white;
             border: none;
             border-radius: 10px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             white-space: nowrap;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            background: #493ebd;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 14px rgba(91, 80, 214, 0.22);
         }
 
-        .btn:active {
-            transform: translateY(0);
+        .btn:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        a:focus-visible {
+            outline: 3px solid rgba(91, 80, 214, 0.4);
+            outline-offset: 2px;
         }
 
         .footer {
-            padding: 10px 20px;
+            padding: 18px 20px;
             text-align: center;
-            color: #666;
-            font-size: 11px;
-            background: #f0f0f0;
+            color: #687086;
+            font-size: 12px;
             flex-shrink: 0;
         }
 
-        /* Mobile Responsive */
+        .ad-slot {
+            width: calc(100% - 32px);
+            max-width: 970px;
+            min-height: 90px;
+            margin: 20px auto 0;
+            text-align: center;
+            padding: 14px;
+            background: #fff;
+            border: 1px solid #e6e9f0;
+            border-radius: 14px;
+        }
+
+        .ad-slot-label {
+            margin-bottom: 6px;
+            color: #666;
+            font-size: 11px;
+        }
+
+        @media (max-width: 1024px) {
+            .input-group {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .input-group input,
+            .source-select {
+                grid-column: 1 / -1;
+            }
+        }
+
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 20px;
-            }
-
-            .header p {
-                font-size: 12px;
-            }
-
             .header {
-                padding: 12px 15px;
+                padding: 16px 15px;
             }
 
             .input-group {
-                flex-direction: column;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
-            .btn {
-                width: 100%;
+            .input-group input,
+            .source-select {
+                grid-column: 1 / -1;
             }
 
             .controls {
-                padding: 12px 15px;
+                padding: 14px;
             }
 
             .video-container {
-                min-height: 70vh;
+                width: calc(100% - 24px);
+                margin: 12px auto;
+                min-height: 50vh;
+                min-height: clamp(260px, 52svh, 620px);
+                padding: 6px;
+                border-radius: 14px;
             }
 
             #player {
-                max-height: 80vh;
+                max-height: 78vh;
+                max-height: 78svh;
             }
 
             .footer {
-                padding: 8px 15px;
-                font-size: 10px;
+                padding: 14px;
             }
         }
 
@@ -213,15 +271,18 @@
             }
 
             .controls {
-                padding: 10px;
+                width: calc(100% - 24px);
+                padding: 12px;
             }
 
             .video-container {
-                min-height: 75vh;
+                min-height: 48vh;
+                min-height: 48svh;
             }
 
             #player {
-                max-height: 85vh;
+                max-height: 78vh;
+                max-height: 78svh;
             }
 
             .input-group {
@@ -231,28 +292,19 @@
 
         /* Landscape mode on mobile */
         @media (max-width: 896px) and (orientation: landscape) {
-            .header {
-                padding: 8px 15px;
-            }
-
-            .header h1 {
-                font-size: 16px;
-            }
-
-            .header p {
-                display: none;
-            }
-
             .controls {
                 padding: 10px 15px;
             }
 
             .video-container {
-                min-height: 80vh;
+                min-height: 45vh;
+                min-height: 45svh;
+                margin: 10px auto;
             }
 
             #player {
-                max-height: 90vh;
+                max-height: 85vh;
+                max-height: 85svh;
             }
 
             .footer {
@@ -270,6 +322,14 @@
 
         .loading.active {
             display: block;
+        }
+
+        .loading.error {
+            color: #a11;
+        }
+
+        .loading.error .spinner {
+            display: none;
         }
 
         .spinner {
@@ -295,6 +355,8 @@
             left: 0;
             width: 100%;
             height: 100%;
+            padding: 16px;
+            overflow-y: auto;
             background: rgba(0, 0, 0, 0.85);
             z-index: 1000;
             justify-content: center;
@@ -311,6 +373,10 @@
             padding: 30px;
             max-width: 500px;
             width: 90%;
+            max-height: calc(100vh - 32px);
+            max-height: calc(100dvh - 32px);
+            overflow-y: auto;
+            overscroll-behavior: contain;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             text-align: center;
             animation: modalSlideIn 0.3s ease-out;
@@ -437,12 +503,13 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎬 51Sec Video Player</h1>
+            <h1>🎬 51Sec MM</h1>
+            <p>Choose a source, load a video, and enjoy.</p>
         </div>
 
         <div class="video-container">
             <section id="main">
-                <video id="player" src="http://v.nrzj.vip/video.php" controls controlsList="nodownload" webkit-playsinline playsinline></video>
+                <video id="player" src="http://v.nrzj.vip/video.php" controls controlsList="nodownload" webkit-playsinline playsinline preload="metadata" aria-label="Video player"></video>
             </section>
         </div>
 
@@ -453,7 +520,7 @@
 
         <div class="controls">
             <div class="input-group">
-                <select id="sourceSelector" class="source-select">
+                <select id="sourceSelector" class="source-select" aria-label="Video source">
                     <option value="0">Source 0: cunshao.com/pc</option>
                     <option value="1">Source 1: yujn.cn</option>
                     <option value="2">Source 2: cunshao.com/web</option>
@@ -463,24 +530,26 @@
                     <option value="6" >Source 6: video.nrzj/tiktok</option>
                 </select>
                 <button class="btn" id="sourceBtn" onclick="changeSource()">🔄 Switch</button>
-                <input 
-                    type="text" 
-                    id="videoUrl" 
+                <input
+                    type="url"
+                    id="videoUrl"
                     placeholder="Or enter custom video URL"
                     value=""
+                    aria-label="Custom video URL"
+                    inputmode="url"
                 >
                 <button class="btn" onclick="loadCustomVideo()">▶ Load</button>
                 <button class="btn" id="next">⏭ Next</button>
-                <button class="btn" id="switch">Auto: On</button>
+                <button class="btn" id="switch" aria-pressed="true">Auto: On</button>
             </div>
         </div>
 
         <!-- Pause Modal -->
         <div class="pause-modal" id="pauseModal">
-            <div class="pause-modal-content">
-                <h2>🎬 Take a Break!</h2>
+            <div class="pause-modal-content" role="dialog" aria-modal="true" aria-labelledby="pauseTitle">
+                <h2 id="pauseTitle">🎬 Take a Break!</h2>
                 <p>You've watched 10 videos. Would you like to continue?</p>
-                <img id="pauseImage" class="pause-modal-image" src="https://www.cunshao.com/666666/api/pic.php" alt="Break Image">
+                <img id="pauseImage" class="pause-modal-image" src="https://www.cunshao.com/666666/api/pic.php" alt="Break image">
                 <div class="pause-timer" id="pauseTimer">Refreshing in 10 seconds...</div>
                 <div class="pause-modal-buttons">
                     <button class="btn" onclick="continuePlaying()">✅ Continue</button>
@@ -491,16 +560,16 @@
                 <div class="pause-modal-social">
                     <p>Follow us on social media:</p>
                     <div class="pause-modal-social-icons">
-                        <a href="https://www.youtube.com/c/NetSec" target="_blank" title="51sec YouTube">
+                        <a href="https://www.youtube.com/c/NetSec" target="_blank" rel="noopener noreferrer" title="51sec YouTube">
                             <img src="https://i.51sec.org/2025/Logo-illustrator-YouTube-PNG.png" alt="YouTube">
                         </a>
-                        <a href="https://sites.51sec.org" target="_blank" title="51sec Sites">
+                        <a href="https://sites.51sec.org" target="_blank" rel="noopener noreferrer" title="51sec Sites">
                             <img src="https://photos.51sec.org/file/test1-51sec/2021/10/sites%20-%20round%20-500.png" alt="Sites">
                         </a>
-                        <a href="https://nav.51sec.org" target="_blank" title="51sec Navigation">
+                        <a href="https://nav.51sec.org" target="_blank" rel="noopener noreferrer" title="51sec Navigation">
                             <img src="https://photos.51sec.org/file/test1-51sec/2021/10/Black%2C%20White%20and%20Yellow%20Lightning%20-%20Round%20corner-350.png" alt="Navigation">
                         </a>
-                        <a href="https://od.51sec.org" target="_blank" title="51sec OneDrive">
+                        <a href="https://od.51sec.org" target="_blank" rel="noopener noreferrer" title="51sec OneDrive">
                             <img src="https://photos.51sec.org/file/test1-51sec/2021/10/OneDrive%20OD%2051sec-roundcorner%20-%20Copy.png" alt="OneDrive">
                         </a>
                     </div>
@@ -508,8 +577,18 @@
             </div>
         </div>
 
+        <aside class="ad-slot" aria-label="Advertisement">
+            <p class="ad-slot-label">Advertisement</p>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-5660349373091698"
+                 data-ad-slot="7912531145"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+        </aside>
+
         <div class="footer">
-            <p>© 2026 51Sec Video Player | Netsec Design</p>
+            <p>© 2026 51Sec Video Player | <a href="LICENSE">MIT License</a></p>
         </div>
     </div>
 
@@ -536,49 +615,18 @@
             var auto = true;
             var currentSourceIndex = 3; // Default to source 3 (nrzj.vip)
             var videoCount = 0; // Counter for videos played
+            var videoCounted = false;
+            var breakAfterVideos = 10;
             var pauseTimer = null; // Timer for image refresh
             var pauseCountdown = 10; // Countdown in seconds
             var player = get('player');
             var videoUrlInput = get('videoUrl');
             var sourceSelector = get('sourceSelector');
             var loadingDiv = get('loading');
+            var loadingMessage = loadingDiv.querySelector('p');
             var pauseModal = get('pauseModal');
             var pauseImage = get('pauseImage');
             var pauseTimerSpan = get('pauseTimer');
-
-            // Adjust video size based on aspect ratio
-            var adjustVideoSize = function () {
-                var container = document.querySelector('.video-container');
-                var main = document.querySelector('#main');
-                
-                // Get viewport dimensions
-                var viewportWidth = window.innerWidth;
-                var viewportHeight = window.innerHeight;
-                
-                if (player.videoWidth && player.videoHeight) {
-                    var videoRatio = player.videoWidth / player.videoHeight;
-                    
-                    if (videoRatio > 1) {
-                        // Horizontal video
-                        player.style.width = '100%';
-                        player.style.height = 'auto';
-                        player.style.maxHeight = '75vh';
-                        container.style.minHeight = '60vh';
-                    } else {
-                        // Vertical video
-                        player.style.width = 'auto';
-                        player.style.height = '85vh';
-                        player.style.maxWidth = '100%';
-                        container.style.minHeight = '85vh';
-                    }
-                }
-                
-                // Additional adjustments for mobile landscape
-                if (viewportWidth > viewportHeight && viewportWidth <= 896) {
-                    player.style.maxHeight = '90vh';
-                    container.style.minHeight = '80vh';
-                }
-            };
 
             // Get current video source
             var getCurrentSource = function() {
@@ -587,10 +635,17 @@
 
             // Show pause modal
             var showPauseModal = function() {
+                if (pauseModal.classList.contains('active')) {
+                    return;
+                }
+
                 pauseModal.classList.add('active');
                 player.pause();
                 pauseCountdown = 10;
                 pauseTimerSpan.textContent = 'Refreshing in ' + pauseCountdown + ' seconds...';
+                if (pauseTimer) {
+                    clearInterval(pauseTimer);
+                }
                 
                 // Refresh image with cache busting
                 pauseImage.src = 'https://www.cunshao.com/666666/api/pic.php?' + new Date().getTime();
@@ -638,9 +693,12 @@
             // Load next random video from current source
             var randomm = function () {
                 var source = getCurrentSource();
+                videoCounted = false;
                 player.src = source;
                 player.load();
-                player.play();
+                player.play().catch(function(error) {
+                    console.log('Playback requires user interaction:', error);
+                });
             };
 
             // Change video source
@@ -662,6 +720,7 @@
                 }
 
                 loadingDiv.classList.add('active');
+                videoCounted = false;
 
                 // Check if URL is already a complete video URL or needs to be passed to the current source
                 if (url.startsWith('http://') || url.startsWith('https://')) {
@@ -695,19 +754,20 @@
 
             // Auto-play on error
             bind(player, 'error', function () {
-                console.log('Video error, loading next...');
-                randomm();
+                loadingDiv.classList.add('active', 'error');
+                loadingMessage.textContent = 'Video could not be loaded. Try another source or check the URL.';
             });
 
             // Toggle auto-play
             bind(get('switch'), 'click', function () {
                 auto = !auto;
                 this.innerText = 'Auto: ' + (auto ? 'On' : 'Off');
+                this.setAttribute('aria-pressed', String(auto));
             });
 
             // Auto-play next video when current ends
             bind(player, 'ended', function () {
-                if (videoCount >= 10) {
+                if (videoCount >= breakAfterVideos) {
                     // Show pause modal after 10 videos
                     showPauseModal();
                 } else if (auto) {
@@ -722,21 +782,23 @@
 
             // Video event listeners
             bind(player, 'loadstart', function() {
+                loadingDiv.classList.remove('error');
+                loadingMessage.textContent = 'Loading video...';
                 loadingDiv.classList.add('active');
-            });
-
-            bind(player, 'loadedmetadata', function() {
-                adjustVideoSize();
             });
 
             bind(player, 'loadeddata', function() {
                 loadingDiv.classList.remove('active');
+                loadingDiv.classList.remove('error');
             });
 
             bind(player, 'playing', function() {
                 loadingDiv.classList.remove('active');
-                videoCount++; // Increment counter when video starts playing
-                console.log('Videos played: ' + videoCount);
+                if (!videoCounted) {
+                    videoCount++;
+                    videoCounted = true;
+                    console.log('Videos played: ' + videoCount);
+                }
             });
 
             bind(player, 'pause', function() {
@@ -744,31 +806,11 @@
             });
 
             // Handle Enter key in input
-            bind(videoUrlInput, 'keypress', function(e) {
+            bind(videoUrlInput, 'keydown', function(e) {
                 if (e.key === 'Enter') {
                     loadCustomVideo();
                 }
             });
-
-            // Adjust video size on window resize
-            bind(window, 'resize', function() {
-                adjustVideoSize();
-            });
-
-            // Adjust video size on orientation change
-            bind(window, 'orientationchange', function() {
-                setTimeout(adjustVideoSize, 100);
-            });
-
-            // Prevent zoom on double-tap for mobile
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', function(event) {
-                const now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
 
         })(window, document);
     </script>
@@ -777,7 +819,6 @@
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "80b4601b845e42f997d328ecf9af116b"}'></script><!-- End Cloudflare Web Analytics -->
 
 <script async src="https://fundingchoicesmessages.google.com/i/pub-5660349373091698?ers=1" nonce="71EKVshklXofUN3O1mph_A"></script><script nonce="71EKVshklXofUN3O1mph_A">(function() {function signalGooglefcPresent() {if (!window.frames['googlefcPresent']) {if (document.body) {const iframe = document.createElement('iframe'); iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;'; iframe.style.display = 'none'; iframe.name = 'googlefcPresent'; document.body.appendChild(iframe);} else {setTimeout(signalGooglefcPresent, 0);}}}signalGooglefcPresent();})();</script>
-<script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"> </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5660349373091698"
      crossorigin="anonymous"></script>
     
@@ -790,17 +831,9 @@
   gtag('config', 'G-3NWLMBWBZS');
 </script>
 
-<amp-auto-ads type="adsense"
-        data-ad-client="ca-pub-5660349373091698">
-</amp-auto-ads>
-<amp-ad width="100vw" height="320"
-     type="adsense"
-     data-ad-client="ca-pub-5660349373091698"
-     data-ad-slot="7912531145"
-     data-auto-format="rspv"
-     data-full-width="">
-  <div overflow=""></div>
-</amp-ad>
+<script>
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+</script>
 
 <style> .social-icons {
   display: flex;
@@ -872,26 +905,33 @@
 
 <style>
 #adblock-overlay {
-  display: none; /* hidden by default */
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(255,255,255,0.95);
+  display: none;
+  position: fixed;
+  right: 12px;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  left: 12px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
   z-index: 9999;
   text-align: center;
-  padding-top: 20%;
-  box-sizing: border-box;
-  font: bold 16px Verdana,Arial,sans-serif;
+  font: 14px Verdana,Arial,sans-serif;
 }
 #adblock-overlay button {
-  margin-top: 20px;
+  margin-top: 12px;
   padding: 10px 20px;
+  min-height: 44px;
   font-size: 14px;
 }
 </style>
-<div id="adblock-overlay">
-  Please disable your ad blocker to support us!<br>
-  <small>Visit blog.51sec.org, www.51sec.org for more.</small><br>
-  <button id="adblock-close-btn" disabled>20</button>
+<div id="adblock-overlay" role="status" aria-live="polite">
+  Ads help support 51Sec. Please consider allowing ads or visit
+  <a href="https://www.51sec.org">51sec.org</a>.
+  <br>
+  <button id="adblock-close-btn" type="button">Close</button>
 </div>
 
 <script>
@@ -922,28 +962,11 @@
     overlay.style.display='block';
 
     const btn = document.getElementById('adblock-close-btn');
-    let countdown = 20;
-    btn.disabled = true;
-    btn.textContent = countdown;
-
-    const timer = setInterval(()=>{
-      countdown--;
-      btn.textContent = countdown;
-      if(countdown<=0){
-        clearInterval(timer);
-        btn.textContent = 'Close';
-        btn.disabled = false;
-      }
-    },1000);
-
     btn.onclick = ()=>{
       overlay.style.display='none';
     }
   }
-  // Run once at start
   checkAndShowOverlay();
-  // Repeat every minute
-  setInterval(checkAndShowOverlay, 60000);
 })();
 </script>	
 
