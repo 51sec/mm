@@ -25,9 +25,12 @@ This repository's owner-requested scope is:
 - Responsive video playback for desktop, tablet, and mobile screens, including
   portrait and landscape layouts, using video aspect ratio and viewport-aware
   sizing.
-- Seven selectable video-source endpoints, with a custom URL option.
+- Ten selectable video-source endpoints, with a custom URL option. The three
+  sources added from XJJ include plain-text API resolution (PF129 and WPON Girl)
+  and a JSON API resolved through XJJ's media proxy (Jiejie UK).
 - Direct playback for common video files (`.mp4`, `.webm`, `.ogg`, and `.m3u8`)
-  when supported by the browser. Other URLs are passed to the selected source.
+  when supported by the browser. Other URLs are passed to the selected source
+  when that source supports custom URL forwarding.
 - Optional automatic playback of the next video and a manual Next control.
 - A break after every 10 videos, with a rotating image and Continue/Stop actions.
 - Responsive Google AdSense display advertising and ad-block detection.
@@ -56,8 +59,9 @@ build step.
 
 1. Select a video source and choose **Switch** to load from it.
 2. Choose **Next** to request another video from the selected source.
-3. Paste a URL and choose **Load** to play a direct video or pass it to the
-   selected source.
+3. Paste a direct video URL and choose **Load**. Non-direct URLs are forwarded
+   only by sources that support custom URL forwarding; the added PF129, WPON
+   Girl, and Jiejie UK sources accept direct video URLs only.
 4. Toggle **Auto: On/Off** to control automatic playback when a video ends.
 5. After 10 videos have started, the player pauses at the end of the current
    video and displays a break image. Choose **Continue** to reset the counter
@@ -66,6 +70,9 @@ build step.
 The video and break-image endpoints are third-party services and may change,
 become unavailable, or apply their own terms. Some listed endpoints use HTTP;
 modern HTTPS pages may block those requests as mixed content.
+The added PF129, WPON Girl, and Jiejie UK sources also rely on third-party
+proxies; their availability, response format, and terms are outside this
+project's control.
 
 ## Advertising and analytics
 

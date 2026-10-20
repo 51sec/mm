@@ -528,6 +528,9 @@
                     <option value="4" >Source 4: nrzj.vip/tiktok</option>
                     <option value="5" >Source 5: video.nrzj</option>
                     <option value="6" >Source 6: video.nrzj/tiktok</option>
+                    <option value="7">Source 7: PF129</option>
+                    <option value="8">Source 8: WPON Girl</option>
+                    <option value="9">Source 9: Jiejie UK</option>
                 </select>
                 <button class="btn" id="sourceBtn" onclick="changeSource()">🔄 Switch</button>
                 <input
@@ -603,17 +606,31 @@
             
             // Video sources array
             var videoSources = [
-                'https://www.cunshao.com/666666/api/pc.php',
-                'http://api.yujn.cn/api/zzxjj.php',
-                'https://www.cunshao.com/666666/api/web.php',
-                'http://v.nrzj.vip/video.php',
-                'http://v.nrzj.vip/tiktok/video.php',
-                'http://video.nrzj.vip/video.php',
-                'http://video.nrzj.vip/tiktok/video.php'
+                { url: 'https://www.cunshao.com/666666/api/pc.php' },
+                { url: 'http://api.yujn.cn/api/zzxjj.php' },
+                { url: 'https://www.cunshao.com/666666/api/web.php' },
+                { url: 'http://v.nrzj.vip/video.php' },
+                { url: 'http://v.nrzj.vip/tiktok/video.php' },
+                { url: 'http://video.nrzj.vip/video.php' },
+                { url: 'http://video.nrzj.vip/tiktok/video.php' },
+                {
+                    url: 'https://netsec.alwaysdata.net/proxy.php?src=https%3A%2F%2Fpf129.com%2Fxjj%2Fget%2Fget1.php',
+                    responseFormat: 'text'
+                },
+                {
+                    url: 'https://netsec.alwaysdata.net/proxy.php?src=https%3A%2F%2Ftucdn.wpon.cn%2Fapi-girl%2Findex.php%3Fwpon%3Durl',
+                    responseFormat: 'text'
+                },
+                {
+                    url: 'https://jiejie.uk/api/video?count=1&source=all&anon=1',
+                    responseFormat: 'jiejie',
+                    videoProxyBase: 'https://xjj-proxy-jiejie.51sec.workers.dev/video/'
+                }
             ];
 
             var auto = true;
             var currentSourceIndex = 3; // Default to source 3 (nrzj.vip)
+            var sourceRequestId = 0;
             var videoCount = 0; // Counter for videos played
             var videoCounted = false;
             var breakAfterVideos = 10;
@@ -631,6 +648,19 @@
             // Get current video source
             var getCurrentSource = function() {
                 return videoSources[currentSourceIndex];
+            };
+
+            var normalizeVideoUrl = function(url) {
+                var normalizedUrl = url.trim();
+                if (normalizedUrl.indexOf('//') === 0) {
+                    normalizedUrl = 'https:' + normalizedUrl;
+                }
+
+                var parsedUrl = new URL(normalizedUrl);
+                if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+                    throw new Error('The source returned an unsupported video URL.');
+                }
+                return parsedUrl.href;
             };
 
             // Show pause modal
@@ -691,19 +721,67 @@
             window.stopPlaying = stopPlaying;
 
             // Load next random video from current source
-            var randomm = function () {
+            var randomm = async function () {
                 var source = getCurrentSource();
+                var requestId = ++sourceRequestId;
                 videoCounted = false;
-                player.src = source;
-                player.load();
-                player.play().catch(function(error) {
-                    console.log('Playback requires user interaction:', error);
-                });
+                loadingDiv.classList.remove('error');
+                loadingMessage.textContent = 'Loading video...';
+                loadingDiv.classList.add('active');
+
+                try {
+                    var sourceUrl = source.url;
+                    if (source.responseFormat) {
+                        var response = await fetch(source.url, { cache: 'no-store' });
+                        if (!response.ok) {
+                            throw new Error('Source request failed (HTTP ' + response.status + ').');
+                        }
+
+                        if (source.responseFormat === 'jiejie') {
+                            var data = await response.json();
+                            var itemUrl = data && Array.isArray(data.items) && data.items.length
+                                ? data.items[0].videoUrl
+                                : '';
+                            var videoUrl = itemUrl || (data && Array.isArray(data.urls) ? data.urls[0] : '');
+                            if (!data || data.code !== 200 || typeof videoUrl !== 'string') {
+                                throw new Error('The Jiejie API did not return a video.');
+                            }
+
+                            var parsedVideoUrl = new URL(videoUrl);
+                            var videoMatch = parsedVideoUrl.hostname === 'b1.jiejie.uk'
+                                ? parsedVideoUrl.pathname.match(/^\/([a-f0-9]{16})\.mp4$/i)
+                                : null;
+                            if (!videoMatch) {
+                                throw new Error('The Jiejie API returned an unexpected video URL.');
+                            }
+                            sourceUrl = source.videoProxyBase + videoMatch[1] + '.mp4';
+                        } else {
+                            sourceUrl = normalizeVideoUrl(await response.text());
+                        }
+                    }
+
+                    if (requestId !== sourceRequestId) {
+                        return;
+                    }
+
+                    player.src = sourceUrl;
+                    player.load();
+                    player.play().catch(function(error) {
+                        console.log('Playback requires user interaction:', error);
+                    });
+                } catch (error) {
+                    if (requestId !== sourceRequestId) {
+                        return;
+                    }
+                    console.error('Could not load video source:', error);
+                    loadingDiv.classList.add('active', 'error');
+                    loadingMessage.textContent = error.message || 'Could not load this video source.';
+                }
             };
 
             // Change video source
             var changeSource = function () {
-                currentSourceIndex = parseInt(sourceSelector.value);
+                currentSourceIndex = parseInt(sourceSelector.value, 10);
                 randomm();
             };
 
@@ -722,21 +800,29 @@
                 loadingDiv.classList.add('active');
                 videoCounted = false;
 
-                // Check if URL is already a complete video URL or needs to be passed to the current source
-                if (url.startsWith('http://') || url.startsWith('https://')) {
-                    // If it's a complete URL, check if it looks like a direct video file
-                    if (url.match(/\.(mp4|webm|ogg|m3u8)$/i)) {
-                        // Direct video file
-                        player.src = url;
-                    } else {
-                        // Assume it needs to be passed to the video source API
-                        const currentSource = getCurrentSource();
-                        player.src = currentSource + '?url=' + encodeURIComponent(url);
-                    }
+                var currentSource = getCurrentSource();
+                var isDirectVideo = false;
+                try {
+                    var parsedUrl = new URL(url);
+                    isDirectVideo = (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:') &&
+                        /\.(mp4|webm|ogg|m3u8)$/i.test(parsedUrl.pathname);
+                } catch (error) {
+                    isDirectVideo = false;
+                }
+
+                if (isDirectVideo) {
+                    sourceRequestId++;
+                    player.src = url;
+                } else if (currentSource.responseFormat) {
+                    alert('This source does not support custom URL forwarding. Enter a direct video URL instead.');
+                    loadingDiv.classList.remove('active');
+                    return;
+                } else if (url.startsWith('http://') || url.startsWith('https://')) {
+                    sourceRequestId++;
+                    player.src = currentSource.url + '?url=' + encodeURIComponent(url);
                 } else {
-                    // Not a complete URL, pass it to the current source
-                    const currentSource = getCurrentSource();
-                    player.src = currentSource + '?url=' + encodeURIComponent(url);
+                    sourceRequestId++;
+                    player.src = currentSource.url + '?url=' + encodeURIComponent(url);
                 }
                 
                 player.load();
